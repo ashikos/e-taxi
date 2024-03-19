@@ -25,8 +25,7 @@ class RideStatus(ChoiceAdapter):
     requested = 101
     accepted = 102
     in_progress = 103
-    DRIVER = 104
-    completed = 105
-    cancelled = 106
+    completed = 104
+    cancelled = 105
 
 

@@ -9,6 +9,7 @@ from rest_framework.exceptions import AuthenticationFailed
 from v1.ride import serializers as ride_serializer
 from rest_framework import viewsets
 from v1.ride import models as ride_models
+from v1.ride import filters as ride_filter
 
 
 # Create your views here.
@@ -16,10 +17,10 @@ from v1.ride import models as ride_models
 class Signup(APIView):
 
     def post(self, request):
-        serialiser = ride_serializer.UserSerializer(data=request.data)
-        serialiser.is_valid()
-        serialiser.save()
-        return Response(serialiser.data)
+        serializer = ride_serializer.UserSerializer(data=request.data)
+        serializer.is_valid()
+        serializer.save()
+        return Response(serializer.data)
 
 
 class LoginView(APIView):
@@ -48,15 +49,47 @@ class LoginView(APIView):
         return response
 
 
+class UserView(APIView):
+    """View to retrive user details"""
+    # permission_classes = (permissions.IsAuthenticated, )
+
+    def get(self, request, *args, **kwargs):
+
+        user = request.user
+
+        return Response(ride_serializer.UserSerializer(user).data)
+
+
+class LogoutView(APIView):
+    """View to logout and clear cookies"""
+    def post(self, request):
+        response = Response()
+        response.delete_cookie(key="jwt")
+
+        response.data = {
+            "message": "succceessfully logged out"
+        }
+
+        return response
+
+
 class RideView(viewsets.ModelViewSet):
-    """views for vendors"""
+    """views for ride"""
 
     queryset = ride_models.Ride.objects.all()
     serializer_class = ride_serializer.RideSerializer
+    filterset_class = ride_filter.RideFilter
+
+
+class DriverView(viewsets.ModelViewSet):
+    """views for Driver"""
+
+    queryset = ride_models.Driver.objects.all()
+    serializer_class = ride_serializer.DriverSerializer
 
 
 class LocationView(viewsets.ModelViewSet):
-    """views for vendors"""
+    """views for location"""
 
     queryset = ride_models.RideLocation.objects.all()
     serializer_class = ride_serializer.LocationSerializer
