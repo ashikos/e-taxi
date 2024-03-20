@@ -39,7 +39,6 @@ python manage.py runserver
 
 
 ## Usage
-The Vendor Management System provides APIs to manage vendors and track purchase orders. Detailed documentation for API endpoints and data models can be found in the API Endpoints section below
 
 
 API Endpoints
