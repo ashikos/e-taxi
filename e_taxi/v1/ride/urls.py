@@ -19,7 +19,7 @@ urlpatterns = [
     path('logout/', views.LogoutView.as_view()),
 
     path('<int:pk>/accept/', views.RideAcceptView.as_view(
-        {'put': 'update'}), name='ride-accept'),
+        {'patch': 'update'}), name='ride-accept'),
 
 ]
 

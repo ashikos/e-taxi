@@ -81,12 +81,15 @@ class LogoutView(APIView):
 class RideView(viewsets.ModelViewSet):
     """views for ride"""
 
+    permission_classes = (ride_perms.permissions.IsAuthenticated,)
     queryset = ride_models.Ride.objects.all()
     serializer_class = ride_serializer.RideSerializer
     filterset_class = ride_filter.RideFilter
 
 
 class RideAcceptView(viewsets.ViewSet):
+    """View to accept ride by driver
+    Only drivers are able to accept request"""
     permission_classes = [ride_perms.IsDriver, ]
 
     def update(self, request, pk=None):
@@ -119,6 +122,7 @@ class RideAcceptView(viewsets.ViewSet):
 class DriverView(viewsets.ModelViewSet):
     """views for Driver"""
 
+    permission_classes = (ride_perms.permissions.IsAuthenticated,)
     queryset = ride_models.Driver.objects.all()
     serializer_class = ride_serializer.DriverSerializer
 
