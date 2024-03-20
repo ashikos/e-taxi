@@ -10,10 +10,6 @@ class UserAdmin(admin.ModelAdmin):
 
 class RideAdmin(admin.ModelAdmin):
     list_display = ('rider', 'driver', "destination", "status")
-
-
-class LocationAdmin(admin.ModelAdmin):
-    list_display = ('ride', 'location', "last_updated")
     
 
 class CoordinateAdmin(admin.ModelAdmin):
@@ -24,8 +20,7 @@ class DriverAdmin(admin.ModelAdmin):
     list_display = ('first_name', 'is_available')
 
 
-admin.site.register(Ride, RideAdmin)
-admin.site.register(RideLocation, LocationAdmin)
 admin.site.register(ProjectUser, UserAdmin)
+admin.site.register(Ride, RideAdmin)
 admin.site.register(LocationCoordinates, CoordinateAdmin)
 admin.site.register(Driver, DriverAdmin)

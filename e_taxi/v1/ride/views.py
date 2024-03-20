@@ -123,8 +123,3 @@ class DriverView(viewsets.ModelViewSet):
     serializer_class = ride_serializer.DriverSerializer
 
 
-class LocationView(viewsets.ModelViewSet):
-    """views for location"""
-
-    queryset = ride_models.RideLocation.objects.all()
-    serializer_class = ride_serializer.LocationSerializer

@@ -48,7 +48,8 @@ class DriverSerializer(serializers.ModelSerializer):
         return data
 
     def create(self, validated_data):
-        """overide create to create user"""
+        """override create to update the location of pickup
+        and destinations """
 
         destination_coordinate = {}
         if "coordinates" in validated_data.keys():
@@ -63,21 +64,8 @@ class DriverSerializer(serializers.ModelSerializer):
                 **coordinate_data)
             validated_data['coordinate'] = coordinate
 
-        ride = super().create(validated_data)
-
-
-
-
-        user = super().create(validated_data)
-        return user
-
-
-class LocationSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = ride_models.RideLocation
-        fields = "__all__"
-
-    # def update(self, instance, validated_data):
+        driver = super().create(validated_data)
+        return driver
 
 
 class LocationCoordinatesSerializer(serializers.ModelSerializer):
@@ -106,7 +94,7 @@ class RideSerializer(serializers.ModelSerializer):
         exclude = ['pickup', 'destination']
 
     def get_location(self, instance):
-
+        """ returns the location of pickup and delivery """
         lat1 = instance.pickup.latitude
         lon1 = instance.pickup.longitude
         lat2 = instance.destination.latitude
@@ -124,7 +112,8 @@ class RideSerializer(serializers.ModelSerializer):
         return data
 
     def create(self, validated_data):
-        """overide create to create Ride"""
+        """overide create to update the locations"""
+
         if 'pickup_coordinate' not in validated_data.keys():
             raise exceptions.NotFound("Pickup Location Not Found")
 
@@ -161,9 +150,3 @@ class RideSerializer(serializers.ModelSerializer):
         ride = super().create(validated_data)
         return ride
 
-    def update(self, instance, validated_data):
-
-        # if validated_data
-
-        ride = super().update(instance, validated_data)
-        return ride
