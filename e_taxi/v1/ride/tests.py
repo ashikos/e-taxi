@@ -47,14 +47,14 @@ class RideApiTest(TestCase):
 
         self.user = ProjectUser.objects.create_user(
             username="test_user", password="test_password")
-
-
+        self.driver = Driver.objects.create_user(
+            username="test_driver", password='password', user_type=102)
 
     def test_create_ride(self):
         ride_data = {
             "rider": self.user.pk,
-            "pickup_coordinate": [1.34343, 2.34555],
-            "destination_coordinate": [2.34343, 3.34555]
+            "pickup_coordinate": [1.343431, 2.345551],
+            "destination_coordinate": [2.343431, 3.345551]
         }
 
         response = self.client.post("/ride/ride/", ride_data, format='json')
@@ -62,10 +62,17 @@ class RideApiTest(TestCase):
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
         created_ride = Ride.objects.get()
         serializer = ride_serlze.RideSerializer(created_ride)
-
         self.assertEqual(serializer.data, response.data)
 
-
+        self.assertEqual(created_ride.rider, self.user)
+        self.assertEqual(
+            str(created_ride.pickup.latitude), str(ride_data['pickup_coordinate'][0]))
+        self.assertEqual(
+            str(created_ride.pickup.longitude), str(ride_data['pickup_coordinate'][1]))
+        self.assertEqual(
+            str(created_ride.destination.latitude), str(ride_data['destination_coordinate'][0]))
+        self.assertEqual(
+            str(created_ride.destination.longitude), str(ride_data['destination_coordinate'][1]))
 
 
 
