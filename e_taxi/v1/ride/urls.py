@@ -1,7 +1,7 @@
 from rest_framework.routers import SimpleRouter
 
 from django.urls import path
-from v1.ride import views
+from . import views
 from v1.ride.models import *
 
 
@@ -13,11 +13,14 @@ router.register(r'driver', views.DriverView, basename=Ride)
 
 
 urlpatterns = [
-    path('signup/', views.Signup .as_view()),
-    path('login/', views.LoginView .as_view()),
-    path('user/', views.UserView .as_view()),
-    path('logout/', views.LogoutView .as_view()),
+    path('signup/', views.Signup.as_view()),
+    path('login/', views.LoginView.as_view()),
+    path('user/', views.UserView.as_view()),
+    path('logout/', views.LogoutView.as_view()),
+
+    path('<int:pk>/accept/', views.RideAcceptView.as_view(
+        {'put': 'update'}), name='ride-accept'),
 
 ]
 
-urlpatterns += router.urls
+urlpatterns = urlpatterns + router.urls

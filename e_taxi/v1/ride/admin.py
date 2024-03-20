@@ -21,7 +21,7 @@ class CoordinateAdmin(admin.ModelAdmin):
 
 
 class DriverAdmin(admin.ModelAdmin):
-    list_display = ('user', 'is_available')
+    list_display = ('first_name', 'is_available')
 
 
 admin.site.register(Ride, RideAdmin)

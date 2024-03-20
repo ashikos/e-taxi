@@ -78,7 +78,9 @@ TEMPLATES = [
 WSGI_APPLICATION = 'e_taxi.wsgi.application'
 
 REST_FRAMEWORK = {
-    'DEFAULT_FILTER_BACKENDS': ['django_filters.rest_framework.DjangoFilterBackend']
+    'DEFAULT_FILTER_BACKENDS': [
+        'django_filters.rest_framework.DjangoFilterBackend'],
+
 }
 
 

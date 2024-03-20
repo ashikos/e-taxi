@@ -28,6 +28,12 @@ class UserSerializer(serializers.ModelSerializer):
 
 
 class DriverSerializer(serializers.ModelSerializer):
+
+    coordinates = serializers.ListField(
+        child=serializers.DecimalField(max_digits=9, decimal_places=6),
+        write_only=True, required=False)
+    location = serializers.CharField(write_only=True, required=False)
+
     user_details = serializers.SerializerMethodField(required=False)
 
     class Meta:
@@ -44,8 +50,24 @@ class DriverSerializer(serializers.ModelSerializer):
     def create(self, validated_data):
         """overide create to create user"""
 
-        if "user" not in validated_data.keys():
-            raise exceptions.NotFound("User Not Found")
+        destination_coordinate = {}
+        if "coordinates" in validated_data.keys():
+            coordinates = validated_data.pop('coordinates')
+            coordinate_data = {
+                'latitude': coordinates[0],
+                'longitude': coordinates[1],
+            }
+            if 'location' in validated_data.keys():
+                coordinate_data['location'] = validated_data['location']
+            coordinate = ride_models.LocationCoordinates.objects.create(
+                **coordinate_data)
+            validated_data['coordinate'] = coordinate
+
+        ride = super().create(validated_data)
+
+
+
+
         user = super().create(validated_data)
         return user
 
@@ -103,7 +125,6 @@ class RideSerializer(serializers.ModelSerializer):
 
     def create(self, validated_data):
         """overide create to create Ride"""
-
         if 'pickup_coordinate' not in validated_data.keys():
             raise exceptions.NotFound("Pickup Location Not Found")
 
@@ -111,22 +132,26 @@ class RideSerializer(serializers.ModelSerializer):
             raise exceptions.NotFound("Destination Not Found")
 
         pickup_coordinate = validated_data.pop('pickup_coordinate')
-        pickup_location = validated_data.pop('pickup_location')
         destination_coordinate = validated_data.pop('destination_coordinate')
-        destination = validated_data.pop('destination_loc')
 
         pickup_data = {
             'latitude': pickup_coordinate[0],
             'longitude': pickup_coordinate[1],
-            'location': pickup_location
         }
-        pickup = ride_models.LocationCoordinates.objects.create(**pickup_data)
 
         destination_data = {
             'latitude': destination_coordinate[0],
             'longitude': destination_coordinate[1],
-            'location': destination
         }
+
+        if "pickup_location" in validated_data.keys():
+            pickup_location = validated_data.pop('pickup_location')
+            pickup_data['location'] = pickup_location
+        pickup = ride_models.LocationCoordinates.objects.create(**pickup_data)
+
+        if "destination_loc" in validated_data.keys():
+            destination = validated_data.pop('destination_loc')
+            destination_data['location'] = destination
         destination = ride_models.LocationCoordinates.objects.create(
             **destination_data)
 

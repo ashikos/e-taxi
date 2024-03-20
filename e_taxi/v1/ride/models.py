@@ -12,6 +12,12 @@ class ProjectUser(AbstractUser):
     user_type = models.IntegerField(
         default=UserTypes.USER, choices=UserTypes.choices())
 
+    class Meta:
+        """Meta class for the above model."""
+
+        verbose_name = ('ProjectUser')
+        ordering = ('-id',)
+
 
 class LocationCoordinates(models.Model):
     latitude = models.DecimalField(max_digits=9, decimal_places=6, blank=True,
@@ -31,14 +37,18 @@ class LocationCoordinates(models.Model):
         return f'{self.pk} - {self.location} '
 
 
-class Driver(models.Model):
+class Driver(ProjectUser):
     """Model to store details of driver"""
 
-    user = models.ForeignKey(
-        ProjectUser, related_name='driver', on_delete=models.CASCADE)
     is_available = models.BooleanField(default=True)
     coordinate = models.ForeignKey(
         LocationCoordinates, on_delete=models.SET_NULL, null=True, blank=True)
+
+    class Meta:
+        """Meta class for the above model."""
+
+        verbose_name = ('Driver')
+        ordering = ('-id',)
 
     def __str__(self):
         return f'{self.user.username}'
